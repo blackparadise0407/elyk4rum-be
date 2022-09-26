@@ -1,0 +1,27 @@
+import { Injectable, Logger, NestMiddleware } from '@nestjs/common';
+import { NextFunction, Request, Response } from 'express';
+
+import { AppModule } from '@/app.module';
+
+@Injectable()
+export class HttpLoggerMiddleware implements NestMiddleware {
+  private logger: Logger;
+
+  constructor() {
+    this.logger = new Logger('HTTP');
+  }
+
+  use(request: Request, response: Response, next: NextFunction): void {
+    const { method, originalUrl } = request;
+    const userAgent = request.get('user-agent') || '';
+
+    response.on('close', () => {
+      const { statusCode } = response;
+      let logMsg = `[${method}] ${originalUrl} [${statusCode}]`;
+      if (!AppModule.isDev) logMsg = userAgent + logMsg;
+      this.logger.log(logMsg);
+    });
+
+    next();
+  }
+}
