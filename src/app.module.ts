@@ -5,6 +5,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
+import { CategoriesModule } from './categories/categories.module';
 import configurations from './shared/configurations';
 import { HttpLoggerMiddleware } from './shared/middlewares/http-logger.middleware';
 
@@ -23,6 +24,7 @@ import { HttpLoggerMiddleware } from './shared/middlewares/http-logger.middlewar
       inject: [ConfigService],
     }),
     AuthModule,
+    CategoriesModule,
   ],
   controllers: [AppController],
   providers: [AppService],
