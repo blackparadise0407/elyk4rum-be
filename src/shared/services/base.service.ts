@@ -1,17 +1,31 @@
 import { Logger, NotFoundException } from '@nestjs/common';
-import { Document, FilterQuery, Model } from 'mongoose';
+import {
+  Document,
+  FilterQuery,
+  Model,
+  PaginateModel,
+  PaginateOptions,
+} from 'mongoose';
 
-export class BaseService<TData, TDoc = Document<TData>> {
+export class BaseService<TData, TDoc extends Document<TData> = any> {
   private readonly logger: Logger;
-  private readonly _model: Model<TDoc>;
+  private _model: Model<TDoc>;
+  private _paginatedModel: PaginateModel<TDoc>;
 
-  constructor(model: Model<TDoc>) {
+  constructor(model: Model<TDoc>, paginate = false) {
     this.logger = new Logger(model.modelName);
     this._model = model;
+    if (paginate) {
+      this._paginatedModel = model as PaginateModel<TDoc>;
+    }
   }
 
   public get model() {
     return this._model;
+  }
+
+  public async paginate(query?: FilterQuery<TDoc>, options?: PaginateOptions) {
+    return this._paginatedModel.paginate(query, options);
   }
 
   public async create(payload: Partial<TData>) {

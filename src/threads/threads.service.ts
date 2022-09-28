@@ -4,14 +4,14 @@ import { Model } from 'mongoose';
 
 import { BaseService } from '@/shared/services/base.service';
 
-import { Category, CategoryDocument } from './categories.schema';
+import { Thread, ThreadDocument } from './threads.schema';
 
 @Injectable()
-export class CategoriesService extends BaseService<Category> {
+export class ThreadsService extends BaseService<Thread> {
   constructor(
-    @InjectModel(Category.name)
-    categoryModel: Model<CategoryDocument>,
+    @InjectModel(Thread.name)
+    threadModel: Model<ThreadDocument>,
   ) {
-    super(categoryModel);
+    super(threadModel);
   }
 }
