@@ -12,6 +12,6 @@ export class ThreadsService extends BaseService<Thread> {
     @InjectModel(Thread.name)
     threadModel: Model<ThreadDocument>,
   ) {
-    super(threadModel);
+    super(threadModel, true);
   }
 }

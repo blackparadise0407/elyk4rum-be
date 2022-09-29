@@ -11,6 +11,7 @@ import { CategoriesModule } from './categories/categories.module';
 import configurations from './shared/configurations';
 import { HttpLoggerMiddleware } from './shared/middlewares/http-logger.middleware';
 import { ThreadsModule } from './threads/threads.module';
+import { UsersModule } from './users/users.module';
 
 @Module({
   imports: [
@@ -37,6 +38,7 @@ import { ThreadsModule } from './threads/threads.module';
     AuthModule,
     CategoriesModule,
     ThreadsModule,
+    UsersModule,
   ],
   controllers: [AppController],
   providers: [

@@ -1,4 +1,9 @@
-import { Logger, NotFoundException } from '@nestjs/common';
+import {
+  InternalServerErrorException,
+  Logger,
+  NotFoundException,
+  NotImplementedException,
+} from '@nestjs/common';
 import {
   Document,
   FilterQuery,
@@ -25,7 +30,12 @@ export class BaseService<TData, TDoc extends Document<TData> = any> {
   }
 
   public async paginate(query?: FilterQuery<TDoc>, options?: PaginateOptions) {
-    return this._paginatedModel.paginate(query, options);
+    try {
+      return this._paginatedModel.paginate(query, options);
+    } catch (e) {
+      this.logger.error(e.message);
+      throw new NotImplementedException();
+    }
   }
 
   public async create(payload: Partial<TData>) {
@@ -76,20 +86,16 @@ export class BaseService<TData, TDoc extends Document<TData> = any> {
       return doc;
     } catch (e) {
       this.logger.error(e.message);
+      throw new InternalServerErrorException(e.message);
     }
   }
 
   public async delete(filters: FilterQuery<TDoc> = {}) {
-    try {
-      const doc = await this._model.findOne(filters);
-      if (!doc) {
-        throw new NotFoundException('The deleted resource not found');
-      }
-      await doc.delete();
-      return true;
-    } catch (e) {
-      this.logger.error(e.message);
-      return false;
+    const doc = await this._model.findOne(filters);
+    if (!doc) {
+      throw new NotFoundException('The deleted resource not found');
     }
+    const { deletedCount } = await this._model.deleteOne({ _id: doc._id });
+    return deletedCount > 0;
   }
 }

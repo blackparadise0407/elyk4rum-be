@@ -12,6 +12,6 @@ export class CategoriesService extends BaseService<Category> {
     @InjectModel(Category.name)
     categoryModel: Model<CategoryDocument>,
   ) {
-    super(categoryModel);
+    super(categoryModel, true);
   }
 }
