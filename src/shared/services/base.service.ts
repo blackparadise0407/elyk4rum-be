@@ -12,7 +12,7 @@ import {
   PaginateOptions,
 } from 'mongoose';
 
-export class BaseService<TData, TDoc extends Document<TData> = any> {
+export class BaseService<TData, TDoc = Document<TData>> {
   private readonly logger: Logger;
   private _model: Model<TDoc>;
   private _paginatedModel: PaginateModel<TDoc>;

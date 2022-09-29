@@ -7,7 +7,7 @@ import { BaseService } from '@/shared/services/base.service';
 import { Category, CategoryDocument } from './categories.schema';
 
 @Injectable()
-export class CategoriesService extends BaseService<Category> {
+export class CategoriesService extends BaseService<Category, CategoryDocument> {
   constructor(
     @InjectModel(Category.name)
     categoryModel: Model<CategoryDocument>,

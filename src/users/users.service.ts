@@ -7,7 +7,7 @@ import { BaseService } from '@/shared/services/base.service';
 import { User, UserDocument } from './users.schema';
 
 @Injectable()
-export class UsersService extends BaseService<User> {
+export class UsersService extends BaseService<User, UserDocument> {
   constructor(@InjectModel(User.name) userModel: Model<UserDocument>) {
     super(userModel, true);
   }

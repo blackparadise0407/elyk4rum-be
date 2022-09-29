@@ -15,6 +15,9 @@ export class User {
   id: string;
 
   @Prop()
+  username: string;
+
+  @Prop()
   email: string;
 
   @Prop()
