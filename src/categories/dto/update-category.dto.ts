@@ -3,9 +3,9 @@ import { IsOptional, IsString, MaxLength, MinLength } from 'class-validator';
 
 import { Category } from '../categories.schema';
 
-type IUpdateCategoryDTO = Pick<Category, 'name' | 'description'>;
+type IUpdateCategoryDto = Pick<Category, 'name' | 'description'>;
 
-export class UpdateCategoryDTO implements IUpdateCategoryDTO {
+export class UpdateCategoryDto implements IUpdateCategoryDto {
   @IsString()
   @MaxLength(50)
   @MinLength(3)

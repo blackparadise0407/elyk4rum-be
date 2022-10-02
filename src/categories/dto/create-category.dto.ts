@@ -3,9 +3,9 @@ import { IsOptional, IsString, MaxLength, MinLength } from 'class-validator';
 
 import { Category } from '../categories.schema';
 
-type ICreateCategoryDTO = Pick<Category, 'name' | 'description'>;
+type ICreateCategoryDto = Pick<Category, 'name' | 'description'>;
 
-export class CreateCategoryDTO implements ICreateCategoryDTO {
+export class CreateCategoryDto implements ICreateCategoryDto {
   @IsString()
   @MaxLength(50)
   @MinLength(3)

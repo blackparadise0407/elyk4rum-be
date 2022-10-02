@@ -1,6 +1,8 @@
-import { Module } from '@nestjs/common';
+import { forwardRef, Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import * as paginate from 'mongoose-paginate-v2';
+
+import { ThreadsModule } from '@/threads/threads.module';
 
 import { CategoriesController } from './categories.controller';
 import { Category, CategorySchema } from './categories.schema';
@@ -18,8 +20,10 @@ import { CategoriesService } from './categories.service';
         },
       },
     ]),
+    forwardRef(() => ThreadsModule),
   ],
   controllers: [CategoriesController],
   providers: [CategoriesService],
+  exports: [CategoriesService],
 })
 export class CategoriesModule {}

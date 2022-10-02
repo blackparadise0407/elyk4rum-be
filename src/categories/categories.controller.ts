@@ -1,36 +1,49 @@
 import {
+  BadRequestException,
   Body,
   Controller,
   Delete,
+  forwardRef,
   Get,
+  Inject,
   NotFoundException,
   Param,
   Patch,
   Post,
   Query,
   UseGuards,
+  UseInterceptors,
 } from '@nestjs/common';
 import {
   ApiCreatedResponse,
   ApiForbiddenResponse,
   ApiNotFoundResponse,
   ApiOkResponse,
+  ApiParam,
   ApiTags,
 } from '@nestjs/swagger';
 
 import { JwtAuthGuard } from '@/auth/guards/jwt-auth.guard';
 import { EPermission } from '@/shared/enums/permission.enum';
 import { PermissionGuard } from '@/shared/guards/permissions.guard';
+import { MongooseClassSerializerInterceptor } from '@/shared/interceptors/mongoose-class-serializer.interceptor';
+import { AppResponse } from '@/shared/interfaces/shared.interface';
+import { ThreadsService } from '@/threads/threads.service';
 
 import { Category } from './categories.schema';
 import { CategoriesService } from './categories.service';
-import { CreateCategoryDTO } from './dto/create-category.dto';
-import { UpdateCategoryDTO } from './dto/update-category.dto';
+import { CreateCategoryDto } from './dto/create-category.dto';
+import { UpdateCategoryDto } from './dto/update-category.dto';
 
 @ApiTags('categories')
 @Controller('categories')
+@UseInterceptors(MongooseClassSerializerInterceptor(Category))
 export class CategoriesController {
-  constructor(private readonly categoriesService: CategoriesService) {}
+  constructor(
+    private readonly categoriesService: CategoriesService,
+    @Inject(forwardRef(() => ThreadsService))
+    private readonly threadsService: ThreadsService,
+  ) {}
 
   @Get()
   @UseGuards(PermissionGuard(EPermission.READ_CATEGORIES))
@@ -39,21 +52,19 @@ export class CategoriesController {
   }
 
   @Post()
-  @UseGuards(JwtAuthGuard)
-  @UseGuards(PermissionGuard(EPermission.CREATE_CATEGORIES))
   @ApiCreatedResponse({
     type: Category,
   })
   @ApiForbiddenResponse({
     description: "User doesn't have sufficient permission to create",
   })
-  create(@Body() payload: CreateCategoryDTO) {
+  @UseGuards(JwtAuthGuard)
+  @UseGuards(PermissionGuard(EPermission.CREATE_CATEGORIES))
+  create(@Body() payload: CreateCategoryDto) {
     return this.categoriesService.create(payload);
   }
 
   @Patch(':id')
-  @UseGuards(JwtAuthGuard)
-  @UseGuards(PermissionGuard(EPermission.UPDATE_CATEGORIES))
   @ApiOkResponse({
     type: Category,
   })
@@ -63,14 +74,18 @@ export class CategoriesController {
   @ApiNotFoundResponse({
     description: 'Updated category not found',
   })
-  async update(@Param() id: string, @Body() payload: UpdateCategoryDTO) {
+  @UseGuards(JwtAuthGuard)
+  @UseGuards(PermissionGuard(EPermission.UPDATE_CATEGORIES))
+  async update(@Param() id: string, @Body() payload: UpdateCategoryDto) {
     const category = await this.categoriesService.update({ _id: id }, payload);
     return category;
   }
 
   @Delete(':id')
-  @UseGuards(JwtAuthGuard)
-  @UseGuards(PermissionGuard(EPermission.DELETE_CATEGORIES))
+  @ApiParam({
+    name: 'id',
+    type: String,
+  })
   @ApiOkResponse({
     type: Category,
   })
@@ -80,15 +95,30 @@ export class CategoriesController {
   @ApiNotFoundResponse({
     description: 'Updated category not found',
   })
-  async delete(@Param() id: string, @Query() query: { forced: boolean }) {
-    const { forced = false } = query;
+  @UseGuards(JwtAuthGuard)
+  @UseGuards(PermissionGuard(EPermission.DELETE_CATEGORIES))
+  async delete(
+    @Param('id') id: string,
+    @Query('forced') forced = false,
+  ): Promise<AppResponse> {
     const category = await this.categoriesService.getById(id);
     if (!category) {
       throw new NotFoundException('The deleted resource is not found');
     }
-    /**
-     * TODO: Check if any threads belongs to this category, delete this category and all related threads if forced = true
-     * else delete this category or throw Method not allowed.*/
-    return category;
+
+    if (forced) {
+      await this.threadsService.model.deleteMany({ category });
+      await this.categoriesService.delete({ _id: category.id });
+      return { message: 'Delete category success' };
+    }
+    const existingThread = await this.threadsService.get({ category });
+    if (existingThread) {
+      throw new BadRequestException(
+        'Cannot delete category because of relating threads',
+      );
+    }
+
+    await this.categoriesService.delete({ _id: category.id });
+    return { message: 'Delete category success' };
   }
 }

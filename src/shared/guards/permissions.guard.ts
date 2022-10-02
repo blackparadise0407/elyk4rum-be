@@ -15,7 +15,7 @@ export const PermissionGuard = (
 
       const req = context.switchToHttp().getRequest<Request>();
 
-      const payload = req.user as JwtPayload & { permissions?: string[] };
+      const payload = req.user as JwtPayload;
 
       if (!payload) {
         return false;

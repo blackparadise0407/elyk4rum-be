@@ -18,6 +18,7 @@ async function bootstrap() {
     .setDescription('The Elyk4ruM API description')
     .setVersion('1.0')
     .addTag('elyk4rum')
+    .addBearerAuth()
     .build();
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('swagger', app, document);

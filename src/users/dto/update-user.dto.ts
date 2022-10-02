@@ -1,1 +1,1 @@
-export class UpdateUserDTO {}
+export class UpdateUserDto {}

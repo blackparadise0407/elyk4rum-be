@@ -19,6 +19,7 @@
     "noFallthroughCasesInSwitch": false,
     "paths": {
       "@/*": ["./src/*"]
-    }
+    },
+    "typeRoots": ["src/typings", "node_modules/@types"]
   }
 }

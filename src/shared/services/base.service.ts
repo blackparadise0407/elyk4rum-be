@@ -1,5 +1,4 @@
 import {
-  InternalServerErrorException,
   Logger,
   NotFoundException,
   NotImplementedException,
@@ -10,6 +9,7 @@ import {
   Model,
   PaginateModel,
   PaginateOptions,
+  UpdateQuery,
 } from 'mongoose';
 
 export class BaseService<TData, TDoc = Document<TData>> {
@@ -72,21 +72,16 @@ export class BaseService<TData, TDoc = Document<TData>> {
     }
   }
 
-  public async update(
+  public update(
     filters: FilterQuery<TDoc> = {},
-    payload: Partial<TData>,
+    updateQuery: UpdateQuery<TDoc> = {},
   ) {
     try {
-      const doc = await this._model.findOne(filters);
-      if (!doc) {
-        throw new NotFoundException('The updated resource not found');
-      }
-      doc.set(payload);
-      await doc.save();
-      return doc;
+      return this._model.findOneAndUpdate(filters, updateQuery, {
+        new: true,
+      });
     } catch (e) {
       this.logger.error(e.message);
-      throw new InternalServerErrorException(e.message);
     }
   }
 

@@ -2,6 +2,9 @@ import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import * as paginate from 'mongoose-paginate-v2';
 
+import { CategoriesModule } from '@/categories/categories.module';
+import { UsersModule } from '@/users/users.module';
+
 import { ThreadsController } from './threads.controller';
 import { Thread, ThreadSchema } from './threads.schema';
 import { ThreadsService } from './threads.service';
@@ -18,6 +21,8 @@ import { ThreadsService } from './threads.service';
         },
       },
     ]),
+    UsersModule,
+    CategoriesModule,
   ],
   controllers: [ThreadsController],
   providers: [ThreadsService],
