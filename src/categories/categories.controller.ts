@@ -3,9 +3,7 @@ import {
   Body,
   Controller,
   Delete,
-  forwardRef,
   Get,
-  Inject,
   NotFoundException,
   Param,
   Patch,
@@ -41,7 +39,6 @@ import { UpdateCategoryDto } from './dto/update-category.dto';
 export class CategoriesController {
   constructor(
     private readonly categoriesService: CategoriesService,
-    @Inject(forwardRef(() => ThreadsService))
     private readonly threadsService: ThreadsService,
   ) {}
 
@@ -60,8 +57,11 @@ export class CategoriesController {
   })
   @UseGuards(JwtAuthGuard)
   @UseGuards(PermissionGuard(EPermission.CREATE_CATEGORIES))
-  create(@Body() payload: CreateCategoryDto) {
-    return this.categoriesService.create(payload);
+  create(@Body() { name, description }: CreateCategoryDto) {
+    return this.categoriesService.create({
+      name: name.trim().normalize(),
+      description: description.trim().normalize(),
+    });
   }
 
   @Patch(':id')
@@ -76,7 +76,7 @@ export class CategoriesController {
   })
   @UseGuards(JwtAuthGuard)
   @UseGuards(PermissionGuard(EPermission.UPDATE_CATEGORIES))
-  async update(@Param() id: string, @Body() payload: UpdateCategoryDto) {
+  async update(@Param('id') id: string, @Body() payload: UpdateCategoryDto) {
     const category = await this.categoriesService.update({ _id: id }, payload);
     return category;
   }

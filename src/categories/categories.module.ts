@@ -10,6 +10,7 @@ import { CategoriesService } from './categories.service';
 
 @Module({
   imports: [
+    forwardRef(() => ThreadsModule),
     MongooseModule.forFeatureAsync([
       {
         name: Category.name,
@@ -20,7 +21,6 @@ import { CategoriesService } from './categories.service';
         },
       },
     ]),
-    forwardRef(() => ThreadsModule),
   ],
   controllers: [CategoriesController],
   providers: [CategoriesService],

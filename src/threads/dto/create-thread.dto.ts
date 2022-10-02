@@ -2,6 +2,7 @@ import { ApiProperty } from '@nestjs/swagger';
 import {
   IsBooleanString,
   IsMongoId,
+  IsNotEmpty,
   IsOptional,
   IsString,
 } from 'class-validator';
@@ -9,7 +10,7 @@ import {
 import { Thread } from '../threads.schema';
 
 interface ICreateThreadDto
-  extends Omit<Thread, 'createdBy' | 'category' | 'slug'> {
+  extends Omit<Thread, 'createdBy' | 'category' | 'slug' | 'archived'> {
   createdBy: string;
   categoryId: string;
 }
@@ -21,10 +22,12 @@ export class CreateThreadDto implements ICreateThreadDto {
   draft: boolean;
 
   @IsString()
+  @IsNotEmpty()
   @ApiProperty()
   title: string;
 
   @IsString()
+  @IsNotEmpty()
   @ApiProperty()
   content: string;
 

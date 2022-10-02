@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { forwardRef, Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import * as paginate from 'mongoose-paginate-v2';
 
@@ -22,9 +22,10 @@ import { ThreadsService } from './threads.service';
       },
     ]),
     UsersModule,
-    CategoriesModule,
+    forwardRef(() => CategoriesModule),
   ],
   controllers: [ThreadsController],
   providers: [ThreadsService],
+  exports: [ThreadsService],
 })
 export class ThreadsModule {}

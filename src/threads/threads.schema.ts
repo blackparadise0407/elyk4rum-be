@@ -31,6 +31,10 @@ export class Thread {
   @ApiProperty()
   draft: boolean;
 
+  @Prop({ default: false })
+  @ApiProperty()
+  archived: boolean;
+
   @Prop({ type: MongooseSchema.Types.ObjectId, ref: 'User' })
   @Type(() => User)
   @ApiProperty({
