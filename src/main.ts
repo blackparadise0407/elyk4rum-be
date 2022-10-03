@@ -10,6 +10,22 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   const logger = new Logger('App');
 
+  app.enableCors({
+    origin: (origin, cb) => {
+      if (AppModule.isDev) {
+        cb(null, '*');
+        return;
+      }
+      const allowedOrigins = (process.env.CORS_ORIGINS || '').split(' ');
+      if (allowedOrigins.indexOf(origin) > -1) {
+        cb(null, origin);
+      } else {
+        cb(new Error('Origin not allowed'));
+      }
+    },
+    allowedHeaders: ['GET', 'POST', 'PATCH', 'DELETE', 'OPTIONS'],
+  });
+
   const GLOBAL_PREFIX = '/api';
   app.setGlobalPrefix(GLOBAL_PREFIX);
 

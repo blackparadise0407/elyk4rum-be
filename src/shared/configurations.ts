@@ -1,7 +1,7 @@
 export default () => ({
   port: parseInt(process.env.PORT, 10) || 8080,
   database: {
-    uri: 'mongodb://127.0.0.1:27017/elyk4rum',
+    uri: process.env.MONGO_URI || 'mongodb://127.0.0.1:27017/elyk4rum',
   },
   auth0: {
     domain: process.env.AUTH0_DOMAIN || 'https://dev-2qy1yb53.us.auth0.com',
