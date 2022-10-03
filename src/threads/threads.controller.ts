@@ -45,7 +45,7 @@ export class ThreadsController {
     type: [Thread],
   })
   get() {
-    return '';
+    return this.threadsService.getAll();
   }
 
   @Get(':slug')
