@@ -10,6 +10,6 @@ export default () => ({
   },
   rateLimit: {
     ttl: parseInt(process.env.THROTTLE_TTL, 10) || 15 * 60 * 60, // Window time in seconds
-    limit: parseInt(process.env.THROTTLE_LIMIT, 10) || 100,
+    limit: parseInt(process.env.THROTTLE_LIMIT, 10) || 500,
   },
 });

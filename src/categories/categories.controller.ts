@@ -43,7 +43,6 @@ export class CategoriesController {
   ) {}
 
   @Get()
-  @UseGuards(PermissionGuard(EPermission.READ_CATEGORIES))
   get() {
     return this.categoriesService.getAll();
   }
