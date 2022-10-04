@@ -20,6 +20,7 @@ import {
   ApiParam,
   ApiTags,
 } from '@nestjs/swagger';
+import slugify from 'slugify';
 
 import { JwtAuthGuard } from '@/auth/guards/jwt-auth.guard';
 import { EPermission } from '@/shared/enums/permission.enum';
@@ -60,6 +61,10 @@ export class CategoriesController {
     return this.categoriesService.create({
       name: name.trim().normalize(),
       description: description.trim().normalize(),
+      slug: slugify(name, {
+        strict: true,
+        lower: true,
+      }),
     });
   }
 

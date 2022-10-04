@@ -27,6 +27,10 @@ export class Category {
   @ApiProperty()
   description: string;
 
+  @Prop()
+  @ApiProperty()
+  slug: string;
+
   @ApiProperty()
   createdAt: Date;
 
