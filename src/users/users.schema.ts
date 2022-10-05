@@ -23,9 +23,9 @@ export class User {
   @Transform(({ key, obj }) => obj[key].toString())
   _id: string;
 
-  @Prop({ unique: true })
+  @Prop({ maxlength: 100, minlength: 3 })
   @ApiProperty()
-  username: string;
+  displayName: string;
 
   @Prop({ unique: true })
   @ApiProperty()

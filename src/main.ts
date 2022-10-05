@@ -23,7 +23,7 @@ async function bootstrap() {
         cb(new Error('Origin not allowed'));
       }
     },
-    allowedHeaders: ['GET', 'POST', 'PATCH', 'DELETE', 'OPTIONS'],
+    methods: ['GET', 'POST', 'PATCH', 'DELETE', 'OPTIONS'],
   });
 
   const GLOBAL_PREFIX = '/api';
