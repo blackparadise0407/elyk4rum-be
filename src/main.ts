@@ -1,6 +1,7 @@
 import { Logger, ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import * as compression from 'compression';
 
 import { AppModule } from './app.module';
 import { HttpExceptionFilter } from './shared/filters/http-exception.filter';
@@ -9,6 +10,8 @@ import { ResponseInterceptor } from './shared/interceptors/response.interceptor'
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   const logger = new Logger('App');
+
+  app.use(compression());
 
   app.enableCors({
     origin: (origin, cb) => {
