@@ -1,5 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import {
+  ArrayNotEmpty,
+  IsArray,
   IsBooleanString,
   IsMongoId,
   IsNotEmpty,
@@ -7,10 +9,14 @@ import {
   IsString,
 } from 'class-validator';
 
+import { OutputBlockData } from '../interfaces/editor.interface';
 import { Thread } from '../threads.schema';
 
 interface ICreateThreadDto
-  extends Omit<Thread, 'createdBy' | 'category' | 'slug' | 'archived'> {
+  extends Omit<
+    Thread,
+    'createdBy' | 'category' | 'slug' | 'archived' | 'tags'
+  > {
   createdBy: string;
   categoryId: string;
 }
@@ -26,14 +32,21 @@ export class CreateThreadDto implements ICreateThreadDto {
   @ApiProperty()
   title: string;
 
-  @IsString()
-  @IsNotEmpty()
+  @IsArray()
+  @ArrayNotEmpty()
   @ApiProperty()
-  content: string;
+  blocks: OutputBlockData[];
 
   createdBy: string;
 
   @IsMongoId()
   @ApiProperty()
   categoryId: string;
+
+  @IsMongoId({
+    each: true,
+  })
+  @IsOptional()
+  @ApiProperty()
+  tagIds: string[];
 }

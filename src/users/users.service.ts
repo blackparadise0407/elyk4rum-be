@@ -9,6 +9,6 @@ import { User, UserDocument } from './users.schema';
 @Injectable()
 export class UsersService extends BaseService<User, UserDocument> {
   constructor(@InjectModel(User.name) userModel: Model<UserDocument>) {
-    super(userModel, true);
+    super({ model: userModel, paginated: true });
   }
 }

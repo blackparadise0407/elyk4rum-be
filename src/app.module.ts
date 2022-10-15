@@ -12,6 +12,7 @@ import configurations from './shared/configurations';
 import { HttpLoggerMiddleware } from './shared/middlewares/http-logger.middleware';
 import { ThreadsModule } from './threads/threads.module';
 import { UsersModule } from './users/users.module';
+import { TagsModule } from './tags/tags.module';
 
 @Module({
   imports: [
@@ -39,6 +40,7 @@ import { UsersModule } from './users/users.module';
     CategoriesModule,
     ThreadsModule,
     UsersModule,
+    TagsModule,
   ],
   controllers: [AppController],
   providers: [

@@ -12,15 +12,20 @@ import {
   UpdateQuery,
 } from 'mongoose';
 
+interface BaseServiceInitOptions<TDoc> {
+  model: Model<TDoc>;
+  paginated?: boolean;
+}
+
 export class BaseService<TData, TDoc = Document<TData>> {
   private readonly logger: Logger;
   private _model: Model<TDoc>;
   private _paginatedModel: PaginateModel<TDoc>;
 
-  constructor(model: Model<TDoc>, paginate = false) {
+  constructor({ model, paginated }: BaseServiceInitOptions<TDoc>) {
     this.logger = new Logger(model.modelName);
     this._model = model;
-    if (paginate) {
+    if (paginated) {
       this._paginatedModel = model as PaginateModel<TDoc>;
     }
   }

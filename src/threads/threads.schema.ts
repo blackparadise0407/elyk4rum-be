@@ -4,7 +4,11 @@ import { Type } from 'class-transformer';
 import { Schema as MongooseSchema, Types } from 'mongoose';
 
 import { Category } from '@/categories/categories.schema';
+import { Tag } from '@/tags/tags.schema';
 import { User } from '@/users/users.schema';
+
+import { OutputBlockData } from './interfaces/editor.interface';
+
 export type ThreadDocument = Thread & Document;
 
 @Schema({
@@ -25,7 +29,7 @@ export class Thread {
 
   @Prop()
   @ApiProperty()
-  content: string;
+  blocks: OutputBlockData[];
 
   @Prop({ default: false })
   @ApiProperty()
@@ -48,6 +52,13 @@ export class Thread {
     type: Category,
   })
   category: Category | Types.ObjectId;
+
+  @Prop([{ type: MongooseSchema.Types.ObjectId, ref: 'Tag' }])
+  @Type(() => Array<Tag>)
+  @ApiProperty({
+    type: Array<Tag>,
+  })
+  tags: Tag[] | Types.ObjectId[];
 }
 
 export const ThreadSchema = SchemaFactory.createForClass(Thread);

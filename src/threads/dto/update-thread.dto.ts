@@ -1,6 +1,8 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
 import {
+  ArrayNotEmpty,
+  IsArray,
   IsBooleanString,
   IsMongoId,
   IsNotEmpty,
@@ -8,10 +10,11 @@ import {
   IsString,
 } from 'class-validator';
 
+import { OutputBlockData } from '../interfaces/editor.interface';
 import { Thread } from '../threads.schema';
 
 interface IUpdateThreadDto
-  extends Pick<Thread, 'content' | 'draft' | 'archived' | 'title'> {
+  extends Pick<Thread, 'blocks' | 'draft' | 'archived' | 'title'> {
   categoryId: string;
 }
 
@@ -39,9 +42,9 @@ export class UpdateThreadDto implements IUpdateThreadDto {
   @ApiProperty()
   draft: boolean;
 
-  @IsString()
-  @IsNotEmpty()
+  @ArrayNotEmpty()
+  @IsArray()
   @IsOptional()
   @ApiProperty()
-  content: string;
+  blocks: OutputBlockData<string, any>[];
 }

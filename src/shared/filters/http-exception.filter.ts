@@ -4,7 +4,6 @@ import {
   ExceptionFilter,
   HttpException,
 } from '@nestjs/common';
-import { ValidationError } from 'class-validator';
 
 @Catch(HttpException)
 export class HttpExceptionFilter implements ExceptionFilter {
@@ -13,18 +12,10 @@ export class HttpExceptionFilter implements ExceptionFilter {
     const req = ctx.getRequest();
     const res = ctx.getResponse();
 
-    if (
-      error.response instanceof ValidationError &&
-      Array.isArray(error.response.message) &&
-      error.response.message.length > 0 &&
-      error.response.message[0].constraints
-    ) {
-      const errorsList = error.response.message.map((e) => {
-        return { field: e.property, errors: e.constraints };
-      });
-
-      error.response.errors = errorsList;
-      error.response.message = 'Validation error occured';
+    if (error.response.message?.length > 0) {
+      error.response.errors = error.response.message;
+      error.response.message =
+        error.response.message[0] ?? 'Validation error occured';
     }
 
     res.status(error.getStatus()).json({

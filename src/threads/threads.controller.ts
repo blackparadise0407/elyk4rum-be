@@ -72,7 +72,7 @@ export class ThreadsController {
   @UseGuards(PermissionGuard(EPermission.CREATE_THREADS))
   async create(
     @Auth('sub') sub: string,
-    @Body() { categoryId, title, content, ...body }: CreateThreadDto,
+    @Body() { categoryId, title, tagIds, ...body }: CreateThreadDto,
   ) {
     const createdUser = await this.usersService.get({ auth0Id: sub });
     if (!createdUser) {
@@ -86,8 +86,8 @@ export class ThreadsController {
       ...body,
       createdBy: createdUser.id,
       category: category._id,
-      content: content.normalize(),
       title: title.trim().normalize(),
+      tags: tagIds as any,
       slug:
         slugify(title, { lower: true, strict: true }) +
         '-' +

@@ -10,4 +10,8 @@ export enum EPermission {
   READ_THREADS = 'read:threads',
   UPDATE_THREADS = 'update:threads',
   DELETE_THREADS = 'delete:threads',
+  CREATE_TAGS = 'create:tags',
+  READ_TAGS = 'read:tags',
+  UPDATE_TAGS = 'update:tags',
+  DELETE_TAGS = 'delete:tags',
 }

@@ -12,6 +12,6 @@ export class ThreadsService extends BaseService<Thread, ThreadDocument> {
     @InjectModel(Thread.name)
     threadModel: Model<ThreadDocument>,
   ) {
-    super(threadModel, true);
+    super({ model: threadModel, paginated: true });
   }
 }
