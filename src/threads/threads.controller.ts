@@ -17,6 +17,7 @@ import {
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
+import { Types } from 'mongoose';
 import slugify from 'slugify';
 
 import { JwtAuthGuard } from '@/auth/guards/jwt-auth.guard';
@@ -72,27 +73,38 @@ export class ThreadsController {
   @UseGuards(PermissionGuard(EPermission.CREATE_THREADS))
   async create(
     @Auth('sub') sub: string,
-    @Body() { categoryId, title, tagIds, ...body }: CreateThreadDto,
+    @Body() createThreadDto: CreateThreadDto,
   ) {
+    const { id, categoryId, title, tagIds, draft, ...rest } = createThreadDto;
     const createdUser = await this.usersService.get({ auth0Id: sub });
     if (!createdUser) {
       throw new BadRequestException('User not found');
     }
+
     const category = await this.categoriesService.getById(categoryId);
-    if (!category) {
+    if (categoryId && !category) {
       throw new BadRequestException('Category not found');
     }
-    const thread = await this.threadsService.create({
-      ...body,
-      createdBy: createdUser.id,
-      category: category._id,
-      title: title.trim().normalize(),
-      tags: tagIds as any,
-      slug:
-        slugify(title, { lower: true, strict: true }) +
-        '-' +
-        Date.now().toString(),
-    });
+
+    const thread = await this.threadsService.model.findByIdAndUpdate(
+      id ?? new Types.ObjectId(),
+      {
+        $set: {
+          draft,
+          title: title.trim().normalize(),
+          blocks: createThreadDto.blocks,
+          createdBy: createdUser.id,
+          slug:
+            slugify(title, { lower: true, strict: true }) +
+            '-' +
+            Date.now().toString(),
+          tags: tagIds as any,
+          category: category?._id ?? null,
+          ...rest,
+        },
+      },
+      { upsert: true, new: true },
+    );
     return thread;
   }
 

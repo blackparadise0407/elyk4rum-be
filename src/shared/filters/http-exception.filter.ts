@@ -15,7 +15,7 @@ export class HttpExceptionFilter implements ExceptionFilter {
     if (error.response.message?.length > 0) {
       error.response.errors = error.response.message;
       error.response.message =
-        error.response.message[0] ?? 'Validation error occured';
+        error.response.message ?? 'Validation error occured';
     }
 
     res.status(error.getStatus()).json({

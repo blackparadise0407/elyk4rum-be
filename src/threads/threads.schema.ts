@@ -20,12 +20,16 @@ export type ThreadDocument = Thread & Document;
 })
 export class Thread {
   @Prop()
-  @ApiProperty()
+  @ApiProperty({ required: true })
   title: string;
 
   @Prop()
-  @ApiProperty()
+  @ApiProperty({ required: true })
   slug: string;
+
+  @Prop()
+  @ApiProperty({ default: '', maxLength: 500 })
+  description: string;
 
   @Prop()
   @ApiProperty()
