@@ -57,14 +57,19 @@ export class CategoriesController {
   })
   @UseGuards(JwtAuthGuard)
   @UseGuards(PermissionGuard(EPermission.CREATE_CATEGORIES))
-  create(@Body() { name, description }: CreateCategoryDto) {
+  async create(@Body() { name, description }: CreateCategoryDto) {
+    const slug = slugify(name, {
+      strict: true,
+      lower: true,
+    });
+    const existCat = await this.categoriesService.get({ slug });
+    if (existCat) {
+      throw new BadRequestException('Category with this name already exist');
+    }
     return this.categoriesService.create({
       name: name.trim().normalize(),
       description: description.trim().normalize(),
-      slug: slugify(name, {
-        strict: true,
-        lower: true,
-      }),
+      slug,
     });
   }
 

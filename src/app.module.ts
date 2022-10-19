@@ -10,9 +10,9 @@ import { AuthModule } from './auth/auth.module';
 import { CategoriesModule } from './categories/categories.module';
 import configurations from './shared/configurations';
 import { HttpLoggerMiddleware } from './shared/middlewares/http-logger.middleware';
+import { TagsModule } from './tags/tags.module';
 import { ThreadsModule } from './threads/threads.module';
 import { UsersModule } from './users/users.module';
-import { TagsModule } from './tags/tags.module';
 
 @Module({
   imports: [

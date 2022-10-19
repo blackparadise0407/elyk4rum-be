@@ -10,6 +10,8 @@ import {
   MaxLength,
 } from 'class-validator';
 
+import { THREAD_DESC_MAX_LENGTH } from '@/shared/models/validation.model';
+
 import { OutputBlockData } from '../interfaces/editor.interface';
 import { Thread } from '../threads.schema';
 
@@ -26,7 +28,7 @@ export class CreateThreadDto implements ICreateThreadDto {
   @ApiProperty()
   @IsOptional()
   @IsString()
-  @MaxLength(500)
+  @MaxLength(THREAD_DESC_MAX_LENGTH)
   description: string;
 
   @ApiProperty()

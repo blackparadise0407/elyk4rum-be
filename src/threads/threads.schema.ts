@@ -4,6 +4,7 @@ import { Type } from 'class-transformer';
 import { Schema as MongooseSchema, Types } from 'mongoose';
 
 import { Category } from '@/categories/categories.schema';
+import { THREAD_DESC_MAX_LENGTH } from '@/shared/models/validation.model';
 import { Tag } from '@/tags/tags.schema';
 import { User } from '@/users/users.schema';
 
@@ -28,7 +29,7 @@ export class Thread {
   slug: string;
 
   @Prop()
-  @ApiProperty({ default: '', maxLength: 500 })
+  @ApiProperty({ default: '', maxLength: THREAD_DESC_MAX_LENGTH })
   description: string;
 
   @Prop()

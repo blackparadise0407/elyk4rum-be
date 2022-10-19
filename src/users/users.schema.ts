@@ -1,7 +1,12 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { ApiProperty } from '@nestjs/swagger';
 import { Transform } from 'class-transformer';
-import { Document } from 'mongoose';
+import { Document, Schema as MongooseSchema, Types } from 'mongoose';
+
+import {
+  USER_DISP_NAME_MAX_LENGTH,
+  USER_DISP_NAME_MIN_LENGTH,
+} from '@/shared/models/validation.model';
 
 export type UserDocument = User & Document;
 
@@ -23,7 +28,10 @@ export class User {
   @Transform(({ key, obj }) => obj[key].toString())
   _id: string;
 
-  @Prop({ maxlength: 100, minlength: 3 })
+  @Prop({
+    maxlength: USER_DISP_NAME_MAX_LENGTH,
+    minlength: USER_DISP_NAME_MIN_LENGTH,
+  })
   @ApiProperty()
   displayName: string;
 
@@ -42,6 +50,12 @@ export class User {
   @Prop({ default: true })
   @ApiProperty()
   active: boolean;
+
+  @Prop([{ type: MongooseSchema.Types.ObjectId, ref: 'Thread' }])
+  @ApiProperty({
+    type: Array<string>,
+  })
+  savedThreads: string[] | Types.ObjectId[];
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);

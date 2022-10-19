@@ -3,6 +3,12 @@ import { ApiProperty } from '@nestjs/swagger';
 import { Transform } from 'class-transformer';
 import { Document } from 'mongoose';
 
+import {
+  CAT_DESC_MAX_LENGTH,
+  CAT_NAME_MAX_LENGTH,
+  CAT_NAME_MIN_LENGTH,
+} from '@/shared/models/validation.model';
+
 export type CategoryDocument = Category & Document;
 
 @Schema({
@@ -19,15 +25,19 @@ export class Category {
   @Transform(({ key, obj }) => obj[key].toString())
   _id: string;
 
-  @Prop({ maxlength: 50, minlength: 3, required: true })
+  @Prop({
+    maxlength: CAT_NAME_MAX_LENGTH,
+    minlength: CAT_NAME_MIN_LENGTH,
+    required: true,
+  })
   @ApiProperty()
   name: string;
 
-  @Prop({ maxlength: 200, default: '' })
+  @Prop({ maxlength: CAT_DESC_MAX_LENGTH, default: '' })
   @ApiProperty()
   description: string;
 
-  @Prop()
+  @Prop({ unique: true })
   @ApiProperty()
   slug: string;
 

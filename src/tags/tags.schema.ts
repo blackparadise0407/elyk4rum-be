@@ -3,6 +3,11 @@ import { ApiProperty } from '@nestjs/swagger';
 import { Transform } from 'class-transformer';
 import { Document } from 'mongoose';
 
+import {
+  TAG_NAME_MAX_LENGTH,
+  TAG_NAME_MIN_LENGTH,
+} from '@/shared/models/validation.model';
+
 export type TagDocument = Tag & Document;
 
 @Schema({
@@ -19,7 +24,12 @@ export class Tag {
   @Transform(({ key, obj }) => obj[key].toString())
   _id: string;
 
-  @Prop({ index: 'text', maxlength: 30, minlength: 3, required: true })
+  @Prop({
+    index: 'text',
+    maxlength: TAG_NAME_MAX_LENGTH,
+    minlength: TAG_NAME_MIN_LENGTH,
+    required: true,
+  })
   @ApiProperty()
   name: string;
 

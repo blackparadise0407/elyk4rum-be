@@ -71,6 +71,7 @@ export class BaseService<TData, TDoc = Document<TData>> {
 
   public getById(id: string) {
     try {
+      this._model.findById(id).then(console.log);
       return this._model.findById(id);
     } catch (e) {
       this.logger.error(e.message);
