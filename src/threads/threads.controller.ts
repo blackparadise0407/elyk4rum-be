@@ -49,13 +49,30 @@ export class ThreadsController {
     return this.threadsService.getAll();
   }
 
+  @Get('draft/:id')
+  @ApiOkResponse({
+    type: Thread,
+  })
+  @UseGuards(JwtAuthGuard)
+  @ApiNotFoundResponse({ description: 'Thread not found' })
+  async getDraftById(@Param('id') id: string) {
+    const thread = await this.threadsService.get({ _id: id, archived: false });
+    if (!thread) {
+      throw new NotFoundException(
+        'The requested resource not found on this server',
+      );
+    }
+    return thread;
+  }
+
   @Get(':slug')
   @ApiOkResponse({
     type: Thread,
   })
+  @UseGuards(JwtAuthGuard)
   @ApiNotFoundResponse({ description: 'Thread not found' })
   async getBySlug(@Param('slug') slug: string) {
-    const thread = await this.threadsService.get({ slug });
+    const thread = await this.threadsService.get({ slug, archived: false });
     if (!thread) {
       throw new NotFoundException(
         'The requested resource not found on this server',
@@ -121,7 +138,6 @@ export class ThreadsController {
     @Body() body: UpdateThreadDto,
   ) {
     const thread = await this.threadsService.getById(id);
-    console.log(thread);
     if (!thread) {
       throw new NotFoundException(
         'The requested resource not found on this server',
@@ -139,5 +155,22 @@ export class ThreadsController {
     thread.set(body);
     await thread.save();
     return thread;
+  }
+
+  @Patch(':id/archived')
+  @UseGuards(JwtAuthGuard)
+  @UseGuards(PermissionGuard(EPermission.DELETE_THREADS))
+  async archive(@Auth('sub') sub: string, @Param('id') id: string) {
+    const currentUser = await this.usersService.get({ auth0Id: sub });
+    if (!currentUser) {
+      throw new BadRequestException('User does not exist');
+    }
+    const archivedThread = await this.threadsService.getById(id);
+    if (!archivedThread) {
+      throw new NotFoundException();
+    }
+    archivedThread.set({ archived: true });
+    await archivedThread.save();
+    return archivedThread;
   }
 }
